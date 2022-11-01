@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 @RestController
 @RequestMapping("/train")
@@ -19,7 +20,7 @@ public class TrainController {
     @Autowired
     private TrainService trainService;
     @GetMapping("/{trainNo}/stops")
-    public GetTargetTrainResponse getTargetTrain(@PathVariable @Min(0) int trainNo){
+    public GetTargetTrainResponse getTargetTrain(@PathVariable @Min(value =0,message = "車次必須為正整數") int trainNo){
         GetTargetTrainResponse response = trainService.getTargetTrain(trainNo);
         return response;
     }
