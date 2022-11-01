@@ -27,11 +27,12 @@ public class TrainService {
         List<TrainStop> trainStopList = trainStopRepo.findByTrainUuid(train.getUuid());
         List<Stops> stopsList = new ArrayList<>();
         for (TrainStop stop : trainStopList) {
-
+Stops stops=new Stops(stop.getName(),stop.getTime().toString());
+stopsList.add(stops);
         }
 
 
-        return new GetTargetTrainResponse();
+        return new GetTargetTrainResponse(train.getTrainNo(),train.getTrainKind(),stopsList);
     }
 
 }
