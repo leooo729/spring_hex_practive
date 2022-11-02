@@ -14,4 +14,6 @@ public interface TrainStopRepo extends JpaRepository<TrainStop, String> {
     List<String> findNameAndTimeByTrainUuid(String trainUuid);
 
     List<TrainStop> findByTrainUuid(String trainUuid);
+    @Query(value = "SELECT TRAIN_UUID FROM TRAIN_STOP WHERE NAME=?1 ORDER BY TIME ASC",nativeQuery = true)
+    List<String> findTrainUuidByName(String name);
 }
