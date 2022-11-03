@@ -15,14 +15,15 @@ import java.util.Map;
 
 @ControllerAdvice
 public class ApplicationExceptionHandler {
-    //Exception
-//    @ExceptionHandler(Exception.class)
-//    public ResponseEntity<ErrorResponse> handler(Exception e) {
-//
-//        ErrorResponse error = new ErrorResponse(e);
-//
-//        return new ResponseEntity<ErrorResponse>(error, HttpStatus.BAD_REQUEST);
-//    }
+//    Exception
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Map> handler(Exception e) {
+
+        Map<String,String>errorMessage=new HashMap<>();
+        errorMessage.put("error",e.getMessage());
+
+        return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
+    }
 
 //    MethodArgumentNotValidException
     @ExceptionHandler(MethodArgumentNotValidException.class)

@@ -6,6 +6,7 @@ import com.example.spring_hex_practive.controller.dto.response.*;
 //import com.example.spring_hex_practive.exception.DataNotFoundException;
 import com.example.spring_hex_practive.exception.DataNotFoundException;
 import com.example.spring_hex_practive.exception.CheckTrainException;
+import com.example.spring_hex_practive.service.BuyTicketService;
 import com.example.spring_hex_practive.service.TrainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,8 @@ import java.util.Map;
 public class TrainController {
     @Autowired
     private TrainService trainService;
+    @Autowired
+    private BuyTicketService buyTicketService;
 
     @GetMapping("/train/{trainNo}/stops")
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -47,7 +50,7 @@ public class TrainController {
 
     @PostMapping("/ticket")
     public ResponseEntity<Map<String,String>> buyTicket(@RequestBody @Valid BuyTicketRequest request) throws CheckTrainException {
-        Map response = trainService.buyTicket(request);
-        return new ResponseEntity<Map<String,String>>(response,HttpStatus.CREATED);
+        Map<String,String> response = buyTicketService.buyTicket(request);
+        return new ResponseEntity<>(response,HttpStatus.CREATED);
     }
 }

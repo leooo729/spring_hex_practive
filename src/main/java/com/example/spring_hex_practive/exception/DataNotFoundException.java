@@ -8,7 +8,6 @@ import java.util.List;
 @NoArgsConstructor
 public class DataNotFoundException extends Exception {
     private String message;
-
     public DataNotFoundException(String message) {
         this.message = message;
     }

@@ -23,19 +23,13 @@ import java.util.Map;
 @Service
 public class TrainService {
     @Autowired
-    private TrainStopRepo trainStopRepo;
+     TrainStopRepo trainStopRepo;
     @Autowired
-    private TrainTicketRepo trainTicketRepo;
+     TrainRepo trainRepo;
     @Autowired
-    private TrainRepo trainRepo;
+     CheckTrainService checkTrainService;
     @Autowired
-    private CheckTrainService checkTrainService;
-    @Autowired
-    private GetTicketPriceService getTicketPriceService;
-    @Autowired
-    private CheckTicketService checkTicketService;
-    @Autowired
-    private SwitchTrainKindSrevice switchTrainKindSrevice;
+     SwitchTrainKindSrevice switchTrainKindSrevice;
 
     public GetTargetTrainResponse getTargetTrain(int trainNo) throws DataNotFoundException {
 
@@ -48,7 +42,9 @@ public class TrainService {
         List<Stops> stopsList = new ArrayList<>();
         String trainName = switchTrainKindSrevice.codeToString(train.getTrainKind());
         for (TrainStop stop : trainStopList) {
-            Stops stops = new Stops(stop.getName(), stop.getTime().toString());
+            Stops stops = new Stops();
+            stops.setStop_name(stop.getName());
+            stops.setStop_time(stop.getTime().toString());
             stopsList.add(stops);
         }
         return new GetTargetTrainResponse(train.getTrainNo(), trainName, stopsList);
@@ -102,23 +98,5 @@ public class TrainService {
         return map;
     }
 
-    public Map<String,String> buyTicket(BuyTicketRequest request) throws CheckTrainException {
-        checkTicketService.checkTrainNoNoExists(request.getTrain_no());
-        checkTicketService.checkStopSeq(request);
 
-        TrainTicket trainTicket = new TrainTicket();
-        String ticketNO = java.util.UUID.randomUUID().toString().replace("-", "").toUpperCase();
-
-        trainTicket.setTicketNo(ticketNO);
-        trainTicket.setTrainUuid(trainRepo.findUuidByTrainNo(request.getTrain_no()));
-        trainTicket.setFromStop(request.getFrom_stop());
-        trainTicket.setToStop(request.getTo_stop());
-        trainTicket.setTakeDate(request.getTake_date());
-        trainTicket.setPrice(getTicketPriceService.getTicketPrice());
-
-        trainTicketRepo.save(trainTicket);
-        Map<String,String> map=new HashMap<>();
-        map.put("uuid",ticketNO);
-        return map;
-    }
 }
