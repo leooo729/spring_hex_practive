@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 public class GetTargetTrainResponse {
 //    @JsonProperty(value = "uTime")
-    private int train_no;
+    private Integer train_no;
     private String train_kind;
     private List<Stops> stops;
 }

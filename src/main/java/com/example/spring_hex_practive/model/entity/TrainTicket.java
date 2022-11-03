@@ -16,8 +16,8 @@ public class TrainTicket {
     @Column(name = "ID")
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Integer id;
-    @Column(name = "TRAIN_NO")
-    private String trainNo;
+    @Column(name = "TICKET_NO")
+    private String ticketNo;
     @Column(name = "TRAIN_UUID")
     private String trainUuid;
     @Column(name = "FROM_STOP")
@@ -25,7 +25,7 @@ public class TrainTicket {
     @Column(name = "TO_STOP")
     private String toStop;
     @Column(name = "TAKE_DATE")
-    private Date takeDate;
+    private String takeDate;//===================Date
     @Column(name = "PRICE")
-    private double price;
+    private Double price;
 }

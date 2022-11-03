@@ -21,7 +21,7 @@ public class Train {
     @Column(name = "UUID")
     private String uuid;
     @Column(name = "TRAIN_NO")
-    private int trainNo;
+    private Integer trainNo;
     @Column(name = "TRAIN_KIND")
     private String trainKind;
 }

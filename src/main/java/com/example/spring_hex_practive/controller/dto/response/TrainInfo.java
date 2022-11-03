@@ -10,6 +10,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TrainInfo {
-    private int train_no;
+    private Integer train_no;
     private String train_kind;
 }

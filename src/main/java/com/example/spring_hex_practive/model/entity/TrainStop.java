@@ -21,7 +21,7 @@ public class TrainStop {
     @Column(name = "TRAIN_UUID")
     private String trainUuid;
     @Column(name = "SEQ")
-    private int seq;
+    private Integer seq;
     @Column(name = "NAME")
     private String name;
     @Column(name = "TIME")

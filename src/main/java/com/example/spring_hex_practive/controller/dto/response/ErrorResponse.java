@@ -1,8 +1,7 @@
 package com.example.spring_hex_practive.controller.dto.response;
 
 import com.example.spring_hex_practive.exception.DataNotFoundException;
-import com.example.spring_hex_practive.exception.TrainNoException;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.example.spring_hex_practive.exception.CheckTrainException;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -19,13 +18,9 @@ import java.util.Map;
 public class ErrorResponse {
     private String error;
     private List<Map<String, String>> fieldError;
-    public ErrorResponse(TrainNoException e){
+    public ErrorResponse(CheckTrainException e){
         this.error = "Validate Failed";
-        this.fieldError = new ArrayList<>();
-
-        Map<String, String> map = new HashMap<>();
-
-fieldError.add(map);
+        this.fieldError = e.getErrorList();
     }
 
 
@@ -48,7 +43,9 @@ fieldError.add(map);
 
             Map<String, String> map = new HashMap<>();
             // 錯誤類型
-            map.put("code", c.getConstraintDescriptor().getAnnotation().annotationType().getSimpleName());
+            String code = c.getConstraintDescriptor().getAnnotation().annotationType().getSimpleName();
+            if (!"NotEmpty".equals(code))
+                map.put("code", code);
             // 錯誤訊息
             map.put("message", c.getMessage());
             // 欄位名稱
@@ -58,10 +55,6 @@ fieldError.add(map);
         });
     }
 
-    public ErrorResponse(DataNotFoundException e) {
-        this.error = e.getMessage();
-    }
-
     public ErrorResponse(MethodArgumentNotValidException e) {
         this.error="Validate Failed";
         this.fieldError = new ArrayList<>();
@@ -69,7 +62,6 @@ fieldError.add(map);
         // 因為未通過基礎檢核的欄位可能不只一個
         // 所以需要呼叫 e.getBindingResult().getFieldErrors() 取得不符合基礎檢核的欄位
         // 再放入 fieldError 中
-
         e.getBindingResult().getFieldErrors().forEach(m -> {
             Map<String, String> fieldMap = new HashMap<>();
 

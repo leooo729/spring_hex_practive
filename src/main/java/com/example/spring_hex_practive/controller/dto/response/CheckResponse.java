@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 public class CheckResponse {
     private String id;
-    private List<IdName> category;
+    private IdName category;
     private String name;
     private List photoUrls;
     private List<IdName> tags;
