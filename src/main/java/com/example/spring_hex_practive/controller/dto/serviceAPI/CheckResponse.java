@@ -1,4 +1,4 @@
-package com.example.spring_hex_practive.controller.dto.response;
+package com.example.spring_hex_practive.controller.dto.serviceAPI;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

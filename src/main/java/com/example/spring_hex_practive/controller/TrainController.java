@@ -16,12 +16,12 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("")
 @Validated
 public class TrainController {
     @Autowired
@@ -30,14 +30,14 @@ public class TrainController {
     private BuyTicketService buyTicketService;
 
     @GetMapping("/train/{trainNo}/stops")
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    //@NotBlank(message = "TrainNo不得為空")
     public GetTargetTrainResponse getTargetTrain(@PathVariable @Min(value = 0, message = "車次必須為正整數") Integer trainNo) throws DataNotFoundException {
         GetTargetTrainResponse response = trainService.getTargetTrain(trainNo);
         return response;
     }
 
     @GetMapping("/train")
-    public List<TrainInfo> getTrainByStop(@RequestParam @NotEmpty(message = "Required String parameter 'via' is not present") String via) {
+    public List<TrainInfo> getTrainByStop(@RequestParam @NotEmpty(message = "Required String parameter 'via' is not present") String via) throws DataNotFoundException {
         List<TrainInfo> response = trainService.getTrainByStop(via);
         return response;
     }

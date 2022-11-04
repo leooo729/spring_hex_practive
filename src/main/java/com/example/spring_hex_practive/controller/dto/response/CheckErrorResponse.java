@@ -1,8 +1,10 @@
 package com.example.spring_hex_practive.controller.dto.response;
 
-import com.example.spring_hex_practive.exception.DataNotFoundException;
 import com.example.spring_hex_practive.exception.CheckTrainException;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import javax.validation.ConstraintViolationException;
@@ -11,39 +13,38 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ErrorResponse {
+public class CheckErrorResponse {
     private String error;
-    private List<Map<String, String>> fieldError;
+    private List<Map<String, String>> checkErrors;
 
-    public ErrorResponse(CheckTrainException e) {
+    public CheckErrorResponse(CheckTrainException e) {
         this.error = "Validate Failed";
-        this.fieldError = e.getErrorList();
+        this.checkErrors = e.getErrorList();
     }
 
-    public ErrorResponse(NumberFormatException e) {
+    public CheckErrorResponse(NumberFormatException e) {
         this.error = "Validate Failed";
-        this.fieldError = new ArrayList<>();
+        this.checkErrors = new ArrayList<>();
         Map<String, String> map = new HashMap<>();
 
         map.put("code", "Min");
 
         map.put("message", "車次必須為正整數");
 
-        map.put("field", "trainNo");
+        map.put("field", "train_no");
 
-        fieldError.add(map);
+        checkErrors.add(map);
     }
 
 
-    public ErrorResponse(ConstraintViolationException e) {
+    public CheckErrorResponse(ConstraintViolationException e) {
         this.error = "Validate Failed";
 
-        this.fieldError = new ArrayList<>();
+        this.checkErrors = new ArrayList<>();
 
         e.getConstraintViolations().stream().forEach(c -> {
 
@@ -62,13 +63,13 @@ public class ErrorResponse {
             map.put("message", c.getMessage());
             map.put("field", fieldName);
 
-            fieldError.add(map);
+            checkErrors.add(map);
         });
     }
 
-    public ErrorResponse(MethodArgumentNotValidException e) {
+    public CheckErrorResponse(MethodArgumentNotValidException e) {
         this.error = "Validate Failed";
-        this.fieldError = new ArrayList<>();
+        this.checkErrors = new ArrayList<>();
 
         e.getBindingResult().getFieldErrors().forEach(m -> {
             Map<String, String> fieldMap = new HashMap<>();
@@ -82,7 +83,7 @@ public class ErrorResponse {
             // 錯誤訊息，例 : 年齡不可為空
             fieldMap.put("message ", m.getDefaultMessage());
 
-            fieldError.add(fieldMap);
+            checkErrors.add(fieldMap);
         });
     }
 }

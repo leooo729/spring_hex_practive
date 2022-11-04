@@ -1,6 +1,6 @@
 package com.example.spring_hex_practive.controller.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.example.spring_hex_practive.controller.dto.request.Stops;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GetTargetTrainResponse {
-//    @JsonProperty(value = "uTime")
     private Integer train_no;
     private String train_kind;
     private List<Stops> stops;
