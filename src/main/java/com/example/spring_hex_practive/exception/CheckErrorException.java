@@ -1,15 +1,15 @@
 package com.example.spring_hex_practive.exception;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 import java.util.Map;
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
-public class MultipleCheckException extends Exception {
+public class CheckErrorException extends Exception {
     private List<Map<String,String>> errorList;
-    public MultipleCheckException(List<Map<String,String>> errorList) {
+    public CheckErrorException(List<Map<String,String>> errorList) {
         this.errorList = errorList;
     }
 

@@ -4,7 +4,7 @@ import com.example.spring_hex_practive.controller.dto.request.CreateTrainRequest
 import com.example.spring_hex_practive.controller.dto.response.GetTargetTrainResponse;
 import com.example.spring_hex_practive.controller.dto.request.Stops;
 import com.example.spring_hex_practive.controller.dto.response.TrainInfo;
-import com.example.spring_hex_practive.exception.MultipleCheckException;
+import com.example.spring_hex_practive.exception.CheckErrorException;
 import com.example.spring_hex_practive.exception.DataNotFoundException;
 import com.example.spring_hex_practive.model.TrainRepo;
 import com.example.spring_hex_practive.model.TrainStopRepo;
@@ -14,10 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class TrainService {
@@ -55,9 +53,10 @@ public class TrainService {
         return getTargetTrainList;
     }
 
-    public Map<String, String> CreateTrainInfo(CreateTrainRequest request) throws MultipleCheckException {
+    public Map<String, String> CreateTrainInfo(CreateTrainRequest request) throws CheckErrorException {
 //---------------------------------------------------------------------set Train
-        multipleTrainCheck(request);
+        List<Stops> sortedStopsList = request.getStops().stream().sorted(Comparator.comparing(Stops::getStop_time)).collect(Collectors.toList());
+        multipleTrainCheck(request,sortedStopsList);
 
         String trainUuid = java.util.UUID.randomUUID().toString().replace("-", "").toUpperCase();
 
@@ -66,7 +65,7 @@ public class TrainService {
         trainRepo.save(train);
 //---------------------------------------------------------------------set TrainStop
         int seq = 1;
-        for (Stops stop : request.getStops()) {
+        for (Stops stop : sortedStopsList) {
 
             TrainStop trainStop = setTrainStopInfo(trainUuid, stop);
             trainStop.setSeq(seq++);
@@ -104,10 +103,10 @@ public class TrainService {
         return trainStop;
     }
 
-    private void multipleTrainCheck(CreateTrainRequest request) throws MultipleCheckException {
+    private void multipleTrainCheck(CreateTrainRequest request,List<Stops> sortedStopsList) throws CheckErrorException {
         checkTrain.checkTrainNoAvailable(request.getTrain_no());
         checkTrain.multipleTrainCheck(request);
-        checkTrain.checkTrainStopsSorted(request);
+        checkTrain.checkTrainStopsSorted(request,sortedStopsList);
     }
 
     private void checkTrainNoExist(Train train) throws DataNotFoundException {

@@ -3,7 +3,7 @@ package com.example.spring_hex_practive.service;
 import com.example.spring_hex_practive.controller.dto.request.CreateTrainRequest;
 import com.example.spring_hex_practive.controller.dto.serviceAPI.CheckResponse;
 import com.example.spring_hex_practive.controller.dto.request.Stops;
-import com.example.spring_hex_practive.exception.MultipleCheckException;
+import com.example.spring_hex_practive.exception.CheckErrorException;
 import com.example.spring_hex_practive.model.TrainRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +23,7 @@ public class CheckTrain {
     @Autowired
     private SwitchTrainKind switchTrainKind;
 
-    public void checkTrainNoAvailable(Integer trainNo) throws MultipleCheckException {
+    public void checkTrainNoAvailable(Integer trainNo) throws CheckErrorException {
 
         String url = "https://petstore.swagger.io/v2/pet/" + trainNo;
 
@@ -38,7 +38,7 @@ public class CheckTrain {
     }
 
     //-------------------------------------------------------------------------------------
-    public void multipleTrainCheck(CreateTrainRequest request) throws MultipleCheckException {
+    public void multipleTrainCheck(CreateTrainRequest request) throws CheckErrorException {
 
         List<Map<String, String>> errorList = new ArrayList<>();
 
@@ -47,7 +47,7 @@ public class CheckTrain {
         checkTrainStopsDuplicate(request, errorList);
 
         if (!errorList.isEmpty()) {
-            throw new MultipleCheckException(errorList);
+            throw new CheckErrorException(errorList);
         }
     }
 
@@ -88,13 +88,13 @@ public class CheckTrain {
     private final List<String> places = List.of("屏東", "高雄", "臺南", "嘉義", "彰化", "台中", "苗粟", "新竹", "桃園", "樹林",
             "板橋", "萬華", "台北", "松山", "南港", "汐止", "基隆");
 
-    public void checkTrainStopsSorted(CreateTrainRequest request) throws MultipleCheckException {
+    public void checkTrainStopsSorted(CreateTrainRequest request,List<Stops> sortedStopsList) throws CheckErrorException {
         //取得用時間排序的地名list
-        List<String> sortedStopsList = request.getStops().stream().sorted(Comparator.comparing(Stops::getStop_time)).map(stop -> stop.getStop_name()).collect(Collectors.toList());
+        List<String>sortedStopsNameList=sortedStopsList.stream().map(stop -> stop.getStop_name()).collect(Collectors.toList());
 
         List<Integer> stopNumbersList = new ArrayList<>();
         //找出地名對應的數字
-        for (String stopName : sortedStopsList) {
+        for (String stopName : sortedStopsNameList) {
             if (!places.contains(stopName)) {
                 throwCheckTrainException("TrainStopPositionNotRight", "Train Stops [" + stopName + "] position is not exists");
             }
@@ -116,11 +116,11 @@ public class CheckTrain {
         return errorMessage;
     }
 
-    private void throwCheckTrainException(String code, String message) throws MultipleCheckException {
+    private void throwCheckTrainException(String code, String message) throws CheckErrorException {
         List<Map<String, String>> errorList = new ArrayList<>();
         Map<String, String> errorMessage = setErrorMessage(code, message);
         errorList.add(errorMessage);
-        throw new MultipleCheckException(errorList);
+        throw new CheckErrorException(errorList);
     }
 }
 

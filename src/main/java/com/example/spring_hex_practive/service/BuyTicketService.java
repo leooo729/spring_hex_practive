@@ -2,7 +2,7 @@ package com.example.spring_hex_practive.service;
 
 import com.example.spring_hex_practive.controller.dto.request.BuyTicketRequest;
 import com.example.spring_hex_practive.controller.dto.serviceAPI.GetTicketPriceResponse;
-import com.example.spring_hex_practive.exception.MultipleCheckException;
+import com.example.spring_hex_practive.exception.CheckErrorException;
 import com.example.spring_hex_practive.model.TrainRepo;
 import com.example.spring_hex_practive.model.TrainTicketRepo;
 import com.example.spring_hex_practive.model.entity.TrainTicket;
@@ -25,7 +25,7 @@ public class BuyTicketService {
     @Autowired
     private RestTemplate restTemplate;
 
-    public Map<String, String> buyTicket(BuyTicketRequest request) throws MultipleCheckException {
+    public Map<String, String> buyTicket(BuyTicketRequest request) throws CheckErrorException {
 
         multipleTrainTicketCheck(request);
 
@@ -41,7 +41,7 @@ public class BuyTicketService {
     }
 
     //-----------------------------------------------------------------------------------method
-    private void multipleTrainTicketCheck(BuyTicketRequest request) throws MultipleCheckException {
+    private void multipleTrainTicketCheck(BuyTicketRequest request) throws CheckErrorException {
         checkTicket.checkTrainNoNoExists(request.getTrain_no());
         checkTicket.checkStopSeq(request);
     }
