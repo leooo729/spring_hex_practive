@@ -1,6 +1,5 @@
 package com.example.spring_hex_practive.controller.dto.response;
 
-import com.example.spring_hex_practive.exception.DataNotFoundException;
 import com.example.spring_hex_practive.exception.CheckTrainException;
 import lombok.*;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -16,31 +15,24 @@ import java.util.Map;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ErrorResponse {
+public class FieldErrorResponse {
     private String error;
     private List<Map<String, String>> fieldError;
 
-    public ErrorResponse(CheckTrainException e) {
-        this.error = "Validate Failed";
-        this.fieldError = e.getErrorList();
-    }
-
-    public ErrorResponse(NumberFormatException e) {
+    public FieldErrorResponse(NumberFormatException e) {
         this.error = "Validate Failed";
         this.fieldError = new ArrayList<>();
         Map<String, String> map = new HashMap<>();
 
         map.put("code", "Min");
-
         map.put("message", "車次必須為正整數");
-
         map.put("field", "trainNo");
 
         fieldError.add(map);
     }
 
 
-    public ErrorResponse(ConstraintViolationException e) {
+    public FieldErrorResponse(ConstraintViolationException e) {
         this.error = "Validate Failed";
 
         this.fieldError = new ArrayList<>();
@@ -66,20 +58,15 @@ public class ErrorResponse {
         });
     }
 
-    public ErrorResponse(MethodArgumentNotValidException e) {
+    public FieldErrorResponse(MethodArgumentNotValidException e) {
         this.error = "Validate Failed";
         this.fieldError = new ArrayList<>();
 
         e.getBindingResult().getFieldErrors().forEach(m -> {
             Map<String, String> fieldMap = new HashMap<>();
 
-            // 欄位名稱
             fieldMap.put("fields", m.getField());
-
-            // 錯誤類型，例 : NotNull 或是 NotBlank
             fieldMap.put("code", m.getCode());
-
-            // 錯誤訊息，例 : 年齡不可為空
             fieldMap.put("message ", m.getDefaultMessage());
 
             fieldError.add(fieldMap);

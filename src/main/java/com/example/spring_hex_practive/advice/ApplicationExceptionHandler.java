@@ -1,7 +1,7 @@
 package com.example.spring_hex_practive.advice;
 
 import com.example.spring_hex_practive.controller.dto.response.CheckErrorResponse;
-import com.example.spring_hex_practive.controller.dto.response.ErrorResponse;
+import com.example.spring_hex_practive.controller.dto.response.FieldErrorResponse;
 import com.example.spring_hex_practive.exception.DataNotFoundException;
 import com.example.spring_hex_practive.exception.CheckTrainException;
 import org.springframework.http.HttpStatus;
@@ -18,20 +18,20 @@ import java.util.Map;
 public class ApplicationExceptionHandler {
     //    MethodArgumentNotValidException
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handler(MethodArgumentNotValidException e) {
+    public ResponseEntity<FieldErrorResponse> handler(MethodArgumentNotValidException e) {
 
-        ErrorResponse error = new ErrorResponse(e);
+        FieldErrorResponse error = new FieldErrorResponse(e);
 
-        return new ResponseEntity<ErrorResponse>(error, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<FieldErrorResponse>(error, HttpStatus.BAD_REQUEST);
     }
 
     //ConstraintViolationException
     @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<ErrorResponse> handler(ConstraintViolationException e) {
+    public ResponseEntity<FieldErrorResponse> handler(ConstraintViolationException e) {
 
-        ErrorResponse error = new ErrorResponse(e);
+        FieldErrorResponse error = new FieldErrorResponse(e);
 
-        return new ResponseEntity<ErrorResponse>(error, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<FieldErrorResponse>(error, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(DataNotFoundException.class)
@@ -52,10 +52,10 @@ public class ApplicationExceptionHandler {
     }
 
     @ExceptionHandler(NumberFormatException.class)
-    public ResponseEntity<ErrorResponse> handler(NumberFormatException e) {
+    public ResponseEntity<FieldErrorResponse> handler(NumberFormatException e) {
 
-        ErrorResponse error = new ErrorResponse(e);
+        FieldErrorResponse error = new FieldErrorResponse(e);
 
-        return new ResponseEntity<ErrorResponse>(error, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<FieldErrorResponse>(error, HttpStatus.BAD_REQUEST);
     }
 }
