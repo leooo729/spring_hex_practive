@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Map;
 @Data
 @NoArgsConstructor
-public class CheckTrainException extends Exception {
+public class MultipleCheckException extends Exception {
     private List<Map<String,String>> errorList;
-    public CheckTrainException(List<Map<String,String>> errorList) {
+    public MultipleCheckException(List<Map<String,String>> errorList) {
         this.errorList = errorList;
     }
 

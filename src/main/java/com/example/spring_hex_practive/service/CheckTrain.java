@@ -3,7 +3,7 @@ package com.example.spring_hex_practive.service;
 import com.example.spring_hex_practive.controller.dto.request.CreateTrainRequest;
 import com.example.spring_hex_practive.controller.dto.serviceAPI.CheckResponse;
 import com.example.spring_hex_practive.controller.dto.request.Stops;
-import com.example.spring_hex_practive.exception.CheckTrainException;
+import com.example.spring_hex_practive.exception.MultipleCheckException;
 import com.example.spring_hex_practive.model.TrainRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +23,7 @@ public class CheckTrain {
     @Autowired
     private SwitchTrainKind switchTrainKind;
 
-    public void checkTrainNoAvailable(Integer trainNo) throws CheckTrainException {
+    public void checkTrainNoAvailable(Integer trainNo) throws MultipleCheckException {
 
         String url = "https://petstore.swagger.io/v2/pet/" + trainNo;
 
@@ -38,7 +38,7 @@ public class CheckTrain {
     }
 
     //-------------------------------------------------------------------------------------
-    public void multipleTrainCheck(CreateTrainRequest request) throws CheckTrainException {
+    public void multipleTrainCheck(CreateTrainRequest request) throws MultipleCheckException {
 
         List<Map<String, String>> errorList = new ArrayList<>();
 
@@ -47,7 +47,7 @@ public class CheckTrain {
         checkTrainStopsDuplicate(request, errorList);
 
         if (!errorList.isEmpty()) {
-            throw new CheckTrainException(errorList);
+            throw new MultipleCheckException(errorList);
         }
     }
 
@@ -84,24 +84,27 @@ public class CheckTrain {
     }
 
     //--------------------------------------------------------------------------------------------------
+    //地名南至北順序
     private final List<String> places = List.of("屏東", "高雄", "臺南", "嘉義", "彰化", "台中", "苗粟", "新竹", "桃園", "樹林",
             "板橋", "萬華", "台北", "松山", "南港", "汐止", "基隆");
 
-    public void checkTrainStopsSorted(CreateTrainRequest request) throws CheckTrainException {
+    public void checkTrainStopsSorted(CreateTrainRequest request) throws MultipleCheckException {
         //取得用時間排序的地名list
         List<String> sortedStopsList = request.getStops().stream().sorted(Comparator.comparing(Stops::getStop_time)).map(stop -> stop.getStop_name()).collect(Collectors.toList());
 
         List<Integer> stopNumbersList = new ArrayList<>();
         //找出地名對應的數字
-        for (String s : sortedStopsList) {
-            if (!places.contains(s))
-                throwCheckTrainException("TrainStopPositionNotRight", "Train Stops [" + s + "] position is not exists");
-            stopNumbersList.add(places.indexOf(s));
+        for (String stopName : sortedStopsList) {
+            if (!places.contains(stopName)) {
+                throwCheckTrainException("TrainStopPositionNotRight", "Train Stops [" + stopName + "] position is not exists");
+            }
+            stopNumbersList.add(places.indexOf(stopName));
         }
         //當數字保持有序 前後相減 正負會一致 相乘始終>0 但順序出錯會有 +*- -*+出現 出現負值
         for (int now = 0; now < stopNumbersList.size() - 2; now++) {
-            if (0 > (stopNumbersList.get(now) - stopNumbersList.get(now + 1)) * (stopNumbersList.get(now + 1) - stopNumbersList.get(now + 2)))
+            if (0 > (stopNumbersList.get(now) - stopNumbersList.get(now + 1)) * (stopNumbersList.get(now + 1) - stopNumbersList.get(now + 2))) {
                 throwCheckTrainException("TrainStopsNotSorted", "Train Stops is not sorted");
+            }
         }
     }
 
@@ -113,11 +116,11 @@ public class CheckTrain {
         return errorMessage;
     }
 
-    private void throwCheckTrainException(String code, String message) throws CheckTrainException {
+    private void throwCheckTrainException(String code, String message) throws MultipleCheckException {
         List<Map<String, String>> errorList = new ArrayList<>();
         Map<String, String> errorMessage = setErrorMessage(code, message);
         errorList.add(errorMessage);
-        throw new CheckTrainException(errorList);
+        throw new MultipleCheckException(errorList);
     }
 }
 

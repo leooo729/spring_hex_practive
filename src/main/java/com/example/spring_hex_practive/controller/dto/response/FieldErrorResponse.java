@@ -1,6 +1,5 @@
 package com.example.spring_hex_practive.controller.dto.response;
 
-import com.example.spring_hex_practive.exception.CheckTrainException;
 import lombok.*;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 

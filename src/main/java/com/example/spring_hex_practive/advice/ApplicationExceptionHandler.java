@@ -3,7 +3,7 @@ package com.example.spring_hex_practive.advice;
 import com.example.spring_hex_practive.controller.dto.response.CheckErrorResponse;
 import com.example.spring_hex_practive.controller.dto.response.FieldErrorResponse;
 import com.example.spring_hex_practive.exception.DataNotFoundException;
-import com.example.spring_hex_practive.exception.CheckTrainException;
+import com.example.spring_hex_practive.exception.MultipleCheckException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -43,8 +43,8 @@ public class ApplicationExceptionHandler {
         return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(CheckTrainException.class)
-    public ResponseEntity<CheckErrorResponse> handler(CheckTrainException e) {
+    @ExceptionHandler(MultipleCheckException.class)
+    public ResponseEntity<CheckErrorResponse> handler(MultipleCheckException e) {
 
         CheckErrorResponse error = new CheckErrorResponse(e);
 

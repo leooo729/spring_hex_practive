@@ -1,7 +1,7 @@
 package com.example.spring_hex_practive.service;
 
 import com.example.spring_hex_practive.controller.dto.request.BuyTicketRequest;
-import com.example.spring_hex_practive.exception.CheckTrainException;
+import com.example.spring_hex_practive.exception.MultipleCheckException;
 import com.example.spring_hex_practive.model.TrainRepo;
 import com.example.spring_hex_practive.model.TrainStopRepo;
 import org.springframework.aop.AopInvocationException;
@@ -20,13 +20,13 @@ public class CheckTicket {
     @Autowired
     private TrainStopRepo trainStopRepo;
 
-    public void checkTrainNoNoExists(Integer trainNo) throws CheckTrainException {
+    public void checkTrainNoNoExists(Integer trainNo) throws MultipleCheckException {
         if (trainRepo.findByTrainNo(trainNo) == null) {
             throwCheckTicketException("TrainNoNotExists", "Train No does not exists");
         }
     }
 
-    public void checkStopSeq(BuyTicketRequest request) throws CheckTrainException {
+    public void checkStopSeq(BuyTicketRequest request) throws MultipleCheckException {
         try {
             String trainUuid = trainRepo.findUuidByTrainNo(request.getTrain_no());
             //上車站號碼
@@ -49,10 +49,10 @@ public class CheckTicket {
         return errorMessage;
     }
 
-    private void throwCheckTicketException(String code, String message) throws CheckTrainException {
+    private void throwCheckTicketException(String code, String message) throws MultipleCheckException {
         List<Map<String, String>> errorList = new ArrayList<>();
         Map<String, String> map = setErrorMessage(code, message);
         errorList.add(map);
-        throw new CheckTrainException(errorList);
+        throw new MultipleCheckException(errorList);
     }
 }

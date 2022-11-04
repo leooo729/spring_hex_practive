@@ -5,7 +5,7 @@ import com.example.spring_hex_practive.controller.dto.request.CreateTrainRequest
 import com.example.spring_hex_practive.controller.dto.response.*;
 //import com.example.spring_hex_practive.exception.DataNotFoundException;
 import com.example.spring_hex_practive.exception.DataNotFoundException;
-import com.example.spring_hex_practive.exception.CheckTrainException;
+import com.example.spring_hex_practive.exception.MultipleCheckException;
 import com.example.spring_hex_practive.service.BuyTicketService;
 import com.example.spring_hex_practive.service.TrainService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
 import java.util.Map;
@@ -43,13 +42,13 @@ public class TrainController {
     }
 
     @PostMapping("/train")
-    public ResponseEntity<Map<String,String>> createTrainInfo(@RequestBody @Valid CreateTrainRequest request) throws CheckTrainException {
+    public ResponseEntity<Map<String,String>> createTrainInfo(@RequestBody @Valid CreateTrainRequest request) throws MultipleCheckException {
         Map response = trainService.CreateTrainInfo(request);
         return new ResponseEntity<Map<String,String>>(response,HttpStatus.CREATED);
     }
 
     @PostMapping("/ticket")
-    public ResponseEntity<Map<String,String>> buyTicket(@RequestBody @Valid BuyTicketRequest request) throws CheckTrainException {
+    public ResponseEntity<Map<String,String>> buyTicket(@RequestBody @Valid BuyTicketRequest request) throws MultipleCheckException {
         Map<String,String> response = buyTicketService.buyTicket(request);
         return new ResponseEntity<>(response,HttpStatus.CREATED);
     }

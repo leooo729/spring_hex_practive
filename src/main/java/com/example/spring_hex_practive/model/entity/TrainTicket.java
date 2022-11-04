@@ -25,7 +25,7 @@ public class TrainTicket {
     @Column(name = "TO_STOP")
     private String toStop;
     @Column(name = "TAKE_DATE")
-    private String takeDate;//===================Date
+    private String takeDate;
     @Column(name = "PRICE")
     private Double price;
 }

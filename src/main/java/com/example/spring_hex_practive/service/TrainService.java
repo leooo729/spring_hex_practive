@@ -4,7 +4,7 @@ import com.example.spring_hex_practive.controller.dto.request.CreateTrainRequest
 import com.example.spring_hex_practive.controller.dto.response.GetTargetTrainResponse;
 import com.example.spring_hex_practive.controller.dto.request.Stops;
 import com.example.spring_hex_practive.controller.dto.response.TrainInfo;
-import com.example.spring_hex_practive.exception.CheckTrainException;
+import com.example.spring_hex_practive.exception.MultipleCheckException;
 import com.example.spring_hex_practive.exception.DataNotFoundException;
 import com.example.spring_hex_practive.model.TrainRepo;
 import com.example.spring_hex_practive.model.TrainStopRepo;
@@ -22,13 +22,13 @@ import java.util.Map;
 @Service
 public class TrainService {
     @Autowired
-    TrainStopRepo trainStopRepo;
+    private TrainStopRepo trainStopRepo;
     @Autowired
-    TrainRepo trainRepo;
+    private TrainRepo trainRepo;
     @Autowired
-    CheckTrain checkTrain;
+    private CheckTrain checkTrain;
     @Autowired
-    SwitchTrainKind switchTrainKind;
+    private SwitchTrainKind switchTrainKind;
 
     public GetTargetTrainResponse getTargetTrain(Integer trainNo) throws DataNotFoundException {
 
@@ -55,7 +55,7 @@ public class TrainService {
         return getTargetTrainList;
     }
 
-    public Map<String, String> CreateTrainInfo(CreateTrainRequest request) throws CheckTrainException {
+    public Map<String, String> CreateTrainInfo(CreateTrainRequest request) throws MultipleCheckException {
 //---------------------------------------------------------------------set Train
         multipleTrainCheck(request);
 
@@ -104,7 +104,7 @@ public class TrainService {
         return trainStop;
     }
 
-    private void multipleTrainCheck(CreateTrainRequest request) throws CheckTrainException {
+    private void multipleTrainCheck(CreateTrainRequest request) throws MultipleCheckException {
         checkTrain.checkTrainNoAvailable(request.getTrain_no());
         checkTrain.multipleTrainCheck(request);
         checkTrain.checkTrainStopsSorted(request);
